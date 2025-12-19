@@ -1,6 +1,6 @@
 # Dancing Divas
 
-An audio-reactive sprite animation that responds to music through your microphone.
+An audio-reactive sprite animation of Charli XCX that responds to music through your microphone. Very brat.
 
 ## How It Works
 
