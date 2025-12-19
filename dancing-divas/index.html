@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dancing Divas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gruppo&family=Orbitron:wght@700&family=Staatliches&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --neon: #39ff14;
+      --bg: #000;
+      --bg-light: #111;
+      --btn-bg: #333;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Staatliches', sans-serif;
+    }
+    #container { position: relative; }
+    canvas { display: block; background: var(--bg); }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+    .overlay.hidden { display: none; }
+
+    .title {
+      font-size: 72px;
+      color: var(--neon);
+      text-shadow: 0 0 5px var(--neon), 0 0 10px var(--neon), 0 0 20px var(--neon), 0 0 40px var(--neon), 0 0 80px #00ff00;
+      margin-bottom: 40px;
+      font-family: 'Gruppo', cursive;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+    }
+
+    .btn {
+      padding: 15px 40px;
+      font-size: 18px;
+      background: var(--btn-bg);
+      color: #fff;
+      border: 2px solid var(--neon);
+      cursor: pointer;
+      border-radius: 8px;
+      min-width: 250px;
+      transition: all 0.2s;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .btn:hover {
+      background: var(--neon);
+      color: var(--bg);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--neon);
+    }
+
+    #debug, #log {
+      position: absolute;
+      top: 10px;
+      color: var(--neon);
+      font-family: monospace;
+      background: rgba(0,0,0,0.8);
+      padding: 8px;
+      border-radius: 4px;
+    }
+    #debug { left: 10px; font-size: 12px; max-width: 600px; }
+    #log { right: 10px; font-size: 10px; max-height: 350px; width: 400px; overflow-y: auto; white-space: pre; }
+    .hidden { display: none; }
+    #log .warn { color: #ffaa00; }
+    #log .good { color: #00ff00; }
+    #log .info { color: #888; }
+    
+    #copyLog {
+      position: absolute;
+      top: 365px; right: 10px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-family: monospace;
+      background: var(--btn-bg);
+      color: var(--neon);
+      border: 1px solid var(--neon);
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    #copyLog:hover { background: var(--neon); color: var(--bg); }
+
+    #error {
+      position: absolute;
+      bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      color: #ff4444;
+      font-size: 14px;
+      text-align: center;
+      max-width: 80%;
+    }
+
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .slider-label { color: var(--neon); font-size: 18px; letter-spacing: 1px; }
+    .slider-row { display: flex; align-items: center; gap: 15px; }
+    .slider-value { color: #fff; font-size: 20px; font-weight: bold; min-width: 40px; text-align: center; }
+    .threshold-hint { color: #888; font-size: 14px; margin-top: 5px; }
+    
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 250px; height: 8px;
+      background: var(--btn-bg); border-radius: 4px; outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px; height: 24px;
+      background: var(--neon); border-radius: 50%; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <canvas id="canvas"></canvas>
+
+    <div id="menuScene" class="overlay">
+      <div class="title">Dancing Divas</div>
+      <button class="btn" id="btnStart">Start</button>
+      <button class="btn" id="btnOptions">Options</button>
+    </div>
+
+    <div id="optionsScene" class="overlay hidden">
+      <div class="title">Options</div>
+      <div class="slider-container">
+        <div class="slider-label">Threshold: Ambient → Moderate</div>
+        <div class="slider-row">
+          <input type="range" id="sliderModerate" min="0.5" max="4.5" step="0.5" value="2">
+          <span class="slider-value" id="valModerate">2</span>
+        </div>
+        <div class="threshold-hint">Score needed to start vibing</div>
+      </div>
+      <div class="slider-container">
+        <div class="slider-label">Threshold: Moderate → High Energy</div>
+        <div class="slider-row">
+          <input type="range" id="sliderHigh" min="1" max="5" step="0.5" value="4">
+          <span class="slider-value" id="valHigh">4</span>
+        </div>
+        <div class="threshold-hint">Score needed to start dancing</div>
+      </div>
+      <button class="btn" id="btnDebug">Debug Info: OFF</button>
+      <button class="btn" id="btnBack">Back</button>
+    </div>
+
+    <div id="dollControls" class="hidden" style="position:absolute; bottom:20px; right:20px;">
+      <button class="btn" id="btnExit">ESC - Back to Menu</button>
+    </div>
+
+    <div id="debug" class="hidden"></div>
+    <div id="log" class="hidden"></div>
+    <button id="copyLog" class="hidden">Copy Log</button>
+    <div id="error" class="hidden"></div>
+  </div>
+
+<script>
+// ============ CONFIG ============
+const CONFIG = {
+  width: 1280,
+  height: 720,
+  squareSize: 80,
+  spriteSheet: 'sprites/charli_spreadsheet.png',
+  squareSprite: 'sprites/brat_square.png',
+  sprite: {
+    cols: 16, rows: 4,
+    animations: {
+      idle:       { row: 0, frames: 8,  fps: 5, loop: true },
+      vibing:     { row: 1, frames: 16, fps: 5, loop: true },
+      transition: { row: 2, frames: 12, fps: 5, loop: false },
+      dancing:    { row: 3, frames: 12, fps: 5, loop: true }
+    }
+  },
+  audio: { updateInterval: 1.0, moderateThreshold: 2, highThreshold: 4 },
+  showDebug: false
+};
+
+const State = { AMBIENT: 0, MODERATE: 1, HIGH_ENERGY: 2 };
+const StateNames = ['AMBIENT', 'MODERATE', 'HIGH_ENERGY'];
+
+// ============ UTILS ============
+const $ = id => document.getElementById(id);
+const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+const avg = arr => arr.length ? arr.reduce((a,b) => a+b, 0) / arr.length : 0;
+
+// ============ LOGGER ============
+class Logger {
+  constructor(maxLines = 60) {
+    this.maxLines = maxLines;
+    this.lines = [];
+    this.el = $('log');
+    this.btn = $('copyLog');
+    this.btn.onclick = () => this.copy();
+  }
+  log(msg, type = '') {
+    const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+    const entry = `[${time}] ${msg}`;
+    this.lines.push({ text: entry, type });
+    if (this.lines.length > this.maxLines) this.lines.shift();
+    this.el.innerHTML = this.lines.map(l => 
+      l.type ? `<span class="${l.type}">${l.text}</span>` : l.text
+    ).join('\n');
+    this.el.scrollTop = this.el.scrollHeight;
+  }
+  copy() {
+    navigator.clipboard.writeText(this.lines.map(l => l.text).join('\n'));
+    this.btn.textContent = '✓ Copied!';
+    setTimeout(() => this.btn.textContent = 'Copy Log', 1500);
+  }
+  show() { this.el.classList.remove('hidden'); this.btn.classList.remove('hidden'); }
+  hide() { this.el.classList.add('hidden'); this.btn.classList.add('hidden'); }
+}
+const logger = new Logger();
+
+// ============ SCENE MANAGER ============
+class SceneManager {
+  constructor() { this.current = null; this.scenes = {}; }
+  register(name, scene) { this.scenes[name] = scene; }
+  switchTo(name) {
+    this.current?.onExit?.();
+    this.current = this.scenes[name];
+    this.current?.onEnter?.();
+  }
+  update(dt) { this.current?.update?.(dt); }
+  draw(ctx) { this.current?.draw?.(ctx); }
+}
+
+// ============ STATIONARITY ENGINE ============
+class StationarityEngine {
+  constructor() {
+    this.windowSize = 60;
+    this.warmupFrames = 10;
+    this.windows = { rms: [], flux: [], trans: [] };
+    this.envelopes = { rms: 0.5, flux: 0.5, trans: 0.5 };
+    this.lastOutput = { rms: 0.5, flux: 0.5, transients: 0.5 };
+    this.hysteresis = 0.03;
+  }
+
+  process(rmsDb, flux, transients) {
+    const w = this.windows;
+    w.rms.push(rmsDb); w.flux.push(flux); w.trans.push(transients);
+    if (w.rms.length > this.windowSize) { w.rms.shift(); w.flux.shift(); w.trans.shift(); }
+
+    const calc = arr => {
+      if (arr.length < 2) return { median: arr[0] || 0, iqr: 1 };
+      const sorted = [...arr].sort((a, b) => a - b);
+      const n = sorted.length;
+      return {
+        median: sorted[Math.floor(n / 2)],
+        iqr: Math.max(0.001, sorted[Math.floor(n * 0.75)] - sorted[Math.floor(n * 0.25)])
+      };
+    };
+
+    const normalize = (val, stats) => {
+      const z = (val - stats.median) / (stats.iqr / 1.35);
+      return 1 / (1 + Math.exp(-1.2 * z)); // sigmoid
+    };
+
+    const stats = { rms: calc(w.rms), flux: calc(w.flux), trans: calc(w.trans) };
+    const norm = {
+      rms: normalize(rmsDb, stats.rms),
+      flux: normalize(flux, stats.flux),
+      trans: normalize(transients, stats.trans)
+    };
+
+    // Envelope follow
+    for (const k of ['rms', 'flux', 'trans']) {
+      const alpha = norm[k] > this.envelopes[k] ? 0.35 : 0.08;
+      this.envelopes[k] += alpha * (norm[k] - this.envelopes[k]);
+    }
+
+    // Hysteresis
+    const output = {
+      rms: Math.abs(this.envelopes.rms - this.lastOutput.rms) < this.hysteresis ? this.lastOutput.rms : this.envelopes.rms,
+      flux: Math.abs(this.envelopes.flux - this.lastOutput.flux) < this.hysteresis ? this.lastOutput.flux : this.envelopes.flux,
+      transients: Math.abs(this.envelopes.trans - this.lastOutput.transients) < this.hysteresis ? this.lastOutput.transients : this.envelopes.trans
+    };
+    this.lastOutput = output;
+    return output;
+  }
+
+  get warmup() { return this.windows.rms.length < this.warmupFrames; }
+
+  reset() {
+    this.windows = { rms: [], flux: [], trans: [] };
+    this.envelopes = { rms: 0.5, flux: 0.5, trans: 0.5 };
+    this.lastOutput = { rms: 0.5, flux: 0.5, transients: 0.5 };
+  }
+}
+
+// ============ AUDIO ANALYZER ============
+class AudioAnalyzer {
+  constructor() {
+    this.ctx = null;
+    this.analyser = null;
+    this.stationarity = new StationarityEngine();
+    this.history = { rms: [], flux: [], trans: [] };
+    this.historySize = 10;
+    this.fluxLong = [];
+    this.peak = { active: false, value: 0, intensityHist: [] };
+    this.state = State.AMBIENT;
+    this.initialized = false;
+  }
+
+  async init() {
+    const constraints = {
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, sampleRate: 44100, channelCount: 1 }
+    };
+
+    try {
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        logger.log('Audio: Processing DISABLED ✓', 'good');
+      } catch {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        logger.log('Fallback: default audio constraints', 'warn');
+      }
+
+      this.ctx = new AudioContext({ sampleRate: 44100 });
+      this.analyser = this.ctx.createAnalyser();
+      this.analyser.fftSize = 2048;
+      this.analyser.smoothingTimeConstant = 0.1;
+      this.ctx.createMediaStreamSource(stream).connect(this.analyser);
+
+      this.freqData = new Uint8Array(this.analyser.frequencyBinCount);
+      this.timeData = new Float32Array(this.analyser.fftSize);
+      this.prevSpectrum = new Float32Array(this.analyser.frequencyBinCount);
+      this.currentSpectrum = new Float32Array(this.analyser.frequencyBinCount);
+
+      this.initialized = true;
+      logger.log(`FFT: ${this.analyser.fftSize}, Smooth: ${this.analyser.smoothingTimeConstant}`, 'info');
+      return true;
+    } catch (err) {
+      throw new Error(`Microphone error: ${err.message}`);
+    }
+  }
+
+  analyze() {
+    if (!this.initialized) return { state: State.AMBIENT, rms: -100, transients: 0, score: 0 };
+
+    this.analyser.getByteFrequencyData(this.freqData);
+    this.analyser.getFloatTimeDomainData(this.timeData);
+
+    // RMS
+    let sumSq = 0;
+    for (let i = 0; i < this.timeData.length; i++) sumSq += this.timeData[i] ** 2;
+    const rmsDb = sumSq > 1e-20 ? 20 * Math.log10(Math.sqrt(sumSq / this.timeData.length)) : -100;
+
+    // Spectral flux & transients
+    let flux = 0;
+    const binCount = this.freqData.length;
+    const lowEnd = Math.floor(binCount * 0.1), midEnd = Math.floor(binCount * 0.5);
+    let lowFlux = 0, midFlux = 0, highFlux = 0;
+
+    for (let i = 0; i < binCount; i++) {
+      this.currentSpectrum[i] = this.freqData[i] / 255;
+      const diff = this.currentSpectrum[i] - this.prevSpectrum[i];
+      if (diff > 0) {
+        flux += diff;
+        if (i < lowEnd) lowFlux += diff;
+        else if (i < midEnd) midFlux += diff;
+        else highFlux += diff;
+      }
+    }
+    flux /= Math.sqrt(binCount);
+    
+    const onset = lowFlux / lowEnd * 0.2 + midFlux / (midEnd - lowEnd) * 0.3 + highFlux / (binCount - midEnd) * 0.5;
+    let transients = rmsDb > -60 ? clamp(onset * (1 + (rmsDb + 60) / 30) * 15, 0, 2) : 0;
+
+    [this.prevSpectrum, this.currentSpectrum] = [this.currentSpectrum, this.prevSpectrum];
+
+    // Stationarity
+    const norm = this.stationarity.process(rmsDb, flux, transients);
+    
+    const h = this.history;
+    h.rms.push(norm.rms); h.flux.push(norm.flux); h.trans.push(norm.transients);
+    if (h.rms.length > this.historySize) { h.rms.shift(); h.flux.shift(); h.trans.shift(); }
+
+    // Peak detection
+    const nFlux = Math.max(norm.flux, 0.15);
+    this.fluxLong.push(nFlux);
+    if (this.fluxLong.length > 60) this.fluxLong.shift();
+
+    if (this.fluxLong.length > 10) {
+      const recent = avg(this.fluxLong.slice(-5));
+      const prev = avg(this.fluxLong.slice(-10, -5));
+      
+      if (!this.peak.active) {
+        if (prev > 0.01 && (recent - prev) / prev > 0.25) {
+          this.peak.active = true;
+          this.peak.value = recent;
+          logger.log('>>> PEAK MOMENT START <<<', 'good');
+        }
+      } else {
+        this.peak.value = Math.max(this.peak.value, recent);
+        this.peak.intensityHist.push((recent - this.peak.value) / Math.max(0.01, this.peak.value));
+        if (this.peak.intensityHist.length > 10) this.peak.intensityHist.shift();
+        if (avg(this.peak.intensityHist) < -0.2) {
+          this.peak.active = false;
+          this.peak.intensityHist = [];
+          logger.log('>>> PEAK MOMENT END <<<', 'warn');
+        }
+      }
+    }
+
+    // Score
+    const avgRms = avg(h.rms), avgTrans = avg(h.trans);
+    let score = 0, breakdown = [];
+    
+    if (avgRms > 0.65) { score += 2; breakdown.push('RMS:+2'); }
+    else if (avgRms > 0.4) { score += 1; breakdown.push('RMS:+1'); }
+    else breakdown.push('RMS:+0');
+    
+    if (this.peak.active) { score += 1; breakdown.push('Peak:+1'); }
+    
+    if (avgTrans > 0.55) { score += 2; breakdown.push('Trans:+2'); }
+    else if (avgTrans > 0.3) { score += 1; breakdown.push('Trans:+1'); }
+    else breakdown.push('Trans:+0');
+
+    const warmup = this.stationarity.warmup;
+    logger.log(
+      `RMS:${(avgRms*100).toFixed(0)}% Trans:${(avgTrans*100).toFixed(0)}% Peak:${this.peak.active?'Y':'N'} → Score:${score}${warmup?' [WARMUP]':''}`,
+      score >= CONFIG.audio.highThreshold ? 'good' : score >= CONFIG.audio.moderateThreshold ? 'warn' : 'info'
+    );
+    logger.log(`  ${breakdown.join(' | ')} | Raw dB:${rmsDb.toFixed(1)}`, 'info');
+
+    this.state = score >= CONFIG.audio.highThreshold ? State.HIGH_ENERGY :
+                 score >= CONFIG.audio.moderateThreshold ? State.MODERATE : State.AMBIENT;
+
+    return { state: this.state, rms: rmsDb, rmsNorm: avgRms, transients: avgTrans, peak: this.peak.active, score, warmup };
+  }
+
+  cleanup() {
+    this.ctx?.close();
+    this.ctx = null;
+    this.initialized = false;
+    this.history = { rms: [], flux: [], trans: [] };
+    this.fluxLong = [];
+    this.peak = { active: false, value: 0, intensityHist: [] };
+    this.stationarity.reset();
+  }
+}
+
+// ============ SPRITE ANIMATOR ============
+class SpriteAnimator {
+  constructor(img) {
+    this.img = img;
+    this.frameW = img.width / CONFIG.sprite.cols;
+    this.frameH = img.height / CONFIG.sprite.rows;
+    this.anim = 'idle';
+    this.frame = 0;
+    this.elapsed = 0;
+    this.transitioning = false;
+    this.transitionReverse = false;
+    this.targetAnim = null;
+    this.pendingState = null;
+  }
+
+  setAnim(name, reverse = false, target = null) {
+    if (this.transitioning) {
+      if (target) this.pendingState = { name, reverse, target };
+      return;
+    }
+    if (!target && this.anim === name) return;
+
+    if (target) {
+      this.transitioning = true;
+      this.transitionReverse = reverse;
+      this.targetAnim = target;
+      this.anim = 'transition';
+      this.frame = reverse ? CONFIG.sprite.animations.transition.frames - 1 : 0;
+    } else {
+      this.anim = name;
+      this.frame = 0;
+    }
+    this.elapsed = 0;
+    this.pendingState = null;
+  }
+
+  update(dt) {
+    const anim = CONFIG.sprite.animations[this.anim];
+    if (!anim) return;
+
+    this.elapsed += dt;
+    if (this.elapsed >= 1 / anim.fps) {
+      this.elapsed -= 1 / anim.fps;
+
+      if (this.transitioning) {
+        this.frame += this.transitionReverse ? -1 : 1;
+        if (this.frame < 0 || this.frame >= anim.frames) {
+          this.transitioning = false;
+          this.anim = this.targetAnim;
+          this.frame = 0;
+          this.targetAnim = null;
+          if (this.pendingState) {
+            const p = this.pendingState;
+            this.pendingState = null;
+            this.setAnim(p.name, p.reverse, p.target);
+          }
+        }
+      } else {
+        this.frame = anim.loop ? (this.frame + 1) % anim.frames : Math.min(this.frame + 1, anim.frames - 1);
+      }
+    }
+  }
+
+  draw(ctx, x, y, size) {
+    const anim = CONFIG.sprite.animations[this.anim];
+    if (!anim) return;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(this.img, this.frame * this.frameW, anim.row * this.frameH, this.frameW, this.frameH, x - size/2, y - size/2, size, size);
+  }
+}
+
+// ============ BACKGROUND GRID ============
+class BackgroundGrid {
+  constructor(w, h, size) {
+    this.cols = Math.ceil(w / size);
+    this.rows = Math.ceil(h / size);
+    this.size = size;
+    this.squareImg = null;
+    this.squares = Array.from({ length: this.cols * this.rows }, () => ({ opacity: 0, target: 0, speed: 1 }));
+  }
+
+  async loadSprite() {
+    return new Promise((resolve, reject) => {
+      this.squareImg = new Image();
+      this.squareImg.onload = resolve;
+      this.squareImg.onerror = () => reject(new Error('Failed to load brat_square.png'));
+      this.squareImg.src = CONFIG.squareSprite;
+    });
+  }
+
+  activate(state) {
+    const [percent, fullRatio] = state === State.AMBIENT ? [0.1, 0] :
+                                  state === State.MODERATE ? [0.3, 1/3] : [0.5, 0.5];
+    const count = Math.floor(this.squares.length * percent);
+    const numFull = Math.floor(count * fullRatio);
+
+    const indices = [...Array(this.squares.length).keys()].sort(() => Math.random() - 0.5).slice(0, count);
+    indices.forEach((idx, i) => {
+      const level = i < numFull ? 1 : 0.5;
+      this.squares[idx].opacity = level;
+      this.squares[idx].target = 0;
+      this.squares[idx].speed = level;
+    });
+  }
+
+  update(dt) {
+    for (const sq of this.squares) {
+      if (sq.opacity > sq.target) sq.opacity = Math.max(sq.target, sq.opacity - dt * sq.speed);
+    }
+  }
+
+  draw(ctx) {
+    if (!this.squareImg) return;
+    for (let i = 0; i < this.squares.length; i++) {
+      const sq = this.squares[i];
+      if (sq.opacity > 0) {
+        ctx.globalAlpha = sq.opacity;
+        ctx.drawImage(this.squareImg, (i % this.cols) * this.size, Math.floor(i / this.cols) * this.size, this.size, this.size);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ============ SCENES ============
+class MenuScene {
+  constructor(sm) { this.sm = sm; this.el = $('menuScene'); }
+  onEnter() { this.el.classList.remove('hidden'); }
+  onExit() { this.el.classList.add('hidden'); }
+  draw(ctx) { ctx.fillStyle = '#111'; ctx.fillRect(0, 0, CONFIG.width, CONFIG.height); }
+}
+
+class OptionsScene {
+  constructor(sm) {
+    this.sm = sm;
+    this.el = $('optionsScene');
+    this.sliderMod = $('sliderModerate');
+    this.sliderHigh = $('sliderHigh');
+    this.valMod = $('valModerate');
+    this.valHigh = $('valHigh');
+    this.btnDebug = $('btnDebug');
+    this.sliderMod.oninput = this.sliderHigh.oninput = () => this.onChange();
+  }
+  onEnter() { this.el.classList.remove('hidden'); this.updateDisplay(); }
+  onExit() { this.el.classList.add('hidden'); }
+  onChange() {
+    let mod = parseFloat(this.sliderMod.value), high = parseFloat(this.sliderHigh.value);
+    if (high <= mod) {
+      if (document.activeElement === this.sliderMod) { mod = high - 0.5; this.sliderMod.value = mod; }
+      else { high = mod + 0.5; this.sliderHigh.value = high; }
+    }
+    CONFIG.audio.moderateThreshold = clamp(mod, 0.5, 4.5);
+    CONFIG.audio.highThreshold = clamp(high, 1, 5);
+    this.updateDisplay();
+  }
+  updateDisplay() {
+    this.valMod.textContent = this.sliderMod.value = CONFIG.audio.moderateThreshold;
+    this.valHigh.textContent = this.sliderHigh.value = CONFIG.audio.highThreshold;
+    this.btnDebug.textContent = `Debug Info: ${CONFIG.showDebug ? 'ON' : 'OFF'}`;
+  }
+  toggleDebug() {
+    CONFIG.showDebug = !CONFIG.showDebug;
+    this.updateDisplay();
+    CONFIG.showDebug ? logger.show() : logger.hide();
+  }
+  draw(ctx) { ctx.fillStyle = '#111'; ctx.fillRect(0, 0, CONFIG.width, CONFIG.height); }
+}
+
+class DollScene {
+  constructor(sm) {
+    this.sm = sm;
+    this.audio = new AudioAnalyzer();
+    this.grid = new BackgroundGrid(CONFIG.width, CONFIG.height, CONFIG.squareSize);
+    this.doll = null;
+    this.currentState = State.AMBIENT;
+    this.updateTimer = 0;
+    this.initialized = false;
+    this.controls = $('dollControls');
+    this.debugEl = $('debug');
+    this.errorEl = $('error');
+  }
+
+  async init() {
+    try {
+      this.errorEl.classList.add('hidden');
+      const img = new Image();
+      img.src = CONFIG.spriteSheet;
+      await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error(`Failed to load: ${CONFIG.spriteSheet}`)); });
+      this.doll = new SpriteAnimator(img);
+      await this.grid.loadSprite();
+      await this.audio.init();
+      logger.log('=== AUDIO ANALYZER v2 ===', 'good');
+      logger.log(`Thresholds: MOD>=${CONFIG.audio.moderateThreshold} HIGH>=${CONFIG.audio.highThreshold}`, 'info');
+      logger.log('Aguardando warmup (~10s)...', 'warn');
+      this.initialized = true;
+      return true;
+    } catch (err) {
+      this.errorEl.textContent = err.message;
+      this.errorEl.classList.remove('hidden');
+      return false;
+    }
+  }
+
+  onEnter() {
+    this.controls.classList.remove('hidden');
+    if (CONFIG.showDebug) { this.debugEl.classList.remove('hidden'); logger.show(); }
+  }
+
+  onExit() {
+    this.controls.classList.add('hidden');
+    this.debugEl.classList.add('hidden');
+    logger.hide();
+    this.audio.cleanup();
+    this.initialized = false;
+  }
+
+  updateDollState(newState) {
+    if (!this.doll) return;
+    const cur = this.doll.anim;
+    if (newState === State.AMBIENT && cur !== 'idle' && cur !== 'transition') {
+      this.doll.setAnim('idle');
+    } else if (newState === State.MODERATE) {
+      if (cur === 'dancing') this.doll.setAnim('transition', true, 'vibing');
+      else if (cur !== 'vibing' && cur !== 'transition') this.doll.setAnim('vibing');
+    } else if (newState === State.HIGH_ENERGY) {
+      if (cur === 'vibing' || cur === 'idle') this.doll.setAnim('transition', false, 'dancing');
+      else if (cur !== 'dancing' && cur !== 'transition') this.doll.setAnim('dancing');
+    }
+  }
+
+  update(dt) {
+    if (!this.initialized) return;
+    this.updateTimer += dt;
+    if (this.updateTimer >= CONFIG.audio.updateInterval) {
+      this.updateTimer = 0;
+      const r = this.audio.analyze();
+      if (r.state !== this.currentState) {
+        logger.log(`>>> STATE: ${StateNames[this.currentState]} → ${StateNames[r.state]} <<<`, 'good');
+        this.currentState = r.state;
+        this.updateDollState(r.state);
+      }
+      this.grid.activate(r.state);
+      if (CONFIG.showDebug) {
+        this.debugEl.textContent = `State: ${StateNames[r.state]} (${r.score}/${CONFIG.audio.moderateThreshold}/${CONFIG.audio.highThreshold})${r.warmup?' [WARMUP]':''} | RMS: ${(r.rmsNorm*100).toFixed(0)}% (${r.rms.toFixed(1)}dB) | Trans: ${(r.transients*100).toFixed(0)}% | Peak: ${r.peak?'YES':'no'} | Anim: ${this.doll.anim}`;
+      }
+    }
+    this.grid.update(dt);
+    this.doll?.update(dt);
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, CONFIG.width, CONFIG.height);
+    this.grid.draw(ctx);
+    if (this.doll) {
+      const size = Math.min(CONFIG.width, CONFIG.height) * 0.6;
+      this.doll.draw(ctx, CONFIG.width / 2, CONFIG.height / 2, size);
+    }
+  }
+}
+
+// ============ GAME ============
+class Game {
+  constructor() {
+    this.canvas = $('canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.canvas.width = CONFIG.width;
+    this.canvas.height = CONFIG.height;
+    this.sm = new SceneManager();
+    this.lastTime = 0;
+
+    this.menu = new MenuScene(this.sm);
+    this.options = new OptionsScene(this.sm);
+    this.doll = new DollScene(this.sm);
+
+    this.sm.register('menu', this.menu);
+    this.sm.register('options', this.options);
+    this.sm.register('doll', this.doll);
+
+    $('btnStart').onclick = async () => { if (await this.doll.init()) this.sm.switchTo('doll'); };
+    $('btnOptions').onclick = () => this.sm.switchTo('options');
+    $('btnDebug').onclick = () => this.options.toggleDebug();
+    $('btnBack').onclick = () => this.sm.switchTo('menu');
+    $('btnExit').onclick = () => this.sm.switchTo('menu');
+    document.onkeydown = e => { if (e.key === 'Escape' && this.sm.current !== this.menu) this.sm.switchTo('menu'); };
+
+    this.sm.switchTo('menu');
+    requestAnimationFrame(t => this.loop(t));
+  }
+
+  loop(time) {
+    const dt = Math.min((time - this.lastTime) / 1000, 0.1);
+    this.lastTime = time;
+    this.sm.update(dt);
+    this.sm.draw(this.ctx);
+    requestAnimationFrame(t => this.loop(t));
+  }
+}
+
+// ============ START ============
+console.log('Dancing Divas v1.0');
+new Game();
+</script>
+</body>
+</html>
