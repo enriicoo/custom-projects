@@ -13,4 +13,4 @@ Play music near your device and watch the character react to the audio energy - 
 
 ## Live Demo
 
-[enriicoo.github.io/custom-projects/dancing-divas](https://enriicoo.github.io/custom-projects/dancing_divas/)
+[enriicoo.github.io/custom-projects/dancing-divas](https://enriicoo.github.io/custom-projects/dancing-divas/)
