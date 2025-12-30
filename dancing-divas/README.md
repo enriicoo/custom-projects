@@ -1,5 +1,7 @@
 # Dancing Divas
 
+![Dancing Divas Banner](./sprites/charli_banner.png)
+
 An audio-reactive sprite animation of Charli XCX that responds to music through your microphone. Very brat.
 
 ## How It Works
