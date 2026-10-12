@@ -13,6 +13,6 @@ Play music near your device and watch the character react to the audio energy - 
 - Modern browser with microphone access
 - Spritesheet files in `/sprites` folder
 
-## Live Demo
+## Link
 
 [enriicoo.github.io/custom-projects/dancing-divas](https://enriicoo.github.io/custom-projects/dancing-divas/)
