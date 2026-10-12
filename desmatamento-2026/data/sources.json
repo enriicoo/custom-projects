@@ -1,0 +1,99 @@
+{
+  "retrievedAt": "2026-10-12",
+  "sources": [
+    {
+      "file": "atlas-1991-2025.csv",
+      "url": "https://atlasdigital.mdr.gov.br/arquivos/2026/BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv",
+      "sha256": "78f7efd2d853021678ff4af891e938375b9fd0ce77026cbe052a53dae12bf425"
+    },
+    {
+      "file": "BR_UF_2024.zip",
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2024/Brasil/BR_UF_2024.zip",
+      "sha256": "be61a1e11bf86b265098b5a0b02eb836237421ad73354b1f0892fb6be4598866"
+    },
+    {
+      "file": "biomas-2025.zip",
+      "url": "https://geoftp.ibge.gov.br/informacoes_ambientais/estudos_ambientais/biomas/vetores/2025_Biomas-e-Sistema-Costeiro-Marinho-do-Brasil-1-250000_shp.zip",
+      "sha256": "247b15c427070805044ebe02012f15552850d535fbfecaddb359875cdda1ea8f"
+    },
+    {
+      "file": "native-query-legend.json",
+      "url": "https://dev.plataforma.mapbiomas.org/api/v1/brazil/legends/by/key/coverage_coverage-30m-droufo_number_of_classes-w47dmp",
+      "sha256": "e67d050f33986ae10b7a93d18ede2d4ebc1cc92157e14c5dc2046ddc54512e75"
+    },
+    {
+      "file": "native-query-subtheme.json",
+      "url": "https://dev.plataforma.mapbiomas.org/api/v1/brazil/themes/subthemes/a08b6b28-e5fb-4b53-905c-00dfae310d99",
+      "sha256": "5c52fa9be5ebfb9ad1ac6c1a1221a32b92ce313bb11a9a0cae39d361169ecf92"
+    },
+    {
+      "file": "deforestation-amazonia.json",
+      "url": "https://prd.plataforma.mapbiomas.org/api/v1/brazil/statistics/area?territoryId=1-4-1&spatialMethod=union&subthemeKey=desmatamento-copia-12xxov_annual-c5i7xj&legendKey=deforestation-omgdf4&pixelValue=4&pixelValue=6&year=1987&year=1988&year=1989&year=1990&year=1991&year=1992&year=1993&year=1994&year=1995&year=1996&year=1997&year=1998&year=1999&year=2000&year=2001&year=2002&year=2003&year=2004&year=2005&year=2006&year=2007&year=2008&year=2009&year=2010&year=2011&year=2012&year=2013&year=2014&year=2015&year=2016&year=2017&year=2018&year=2019&year=2020&year=2021&year=2022&year=2023&year=2024&year=2025",
+      "sha256": "68a0a8318393944dfca1bd76108721144ec0ef887411992c937191da48814832"
+    },
+    {
+      "file": "primary-standing-amazonia.json",
+      "url": "https://dev.plataforma.mapbiomas.org/api/v1/brazil/statistics/area?territoryId=1-4-1&spatialMethod=union&subthemeKey=desmatamento-copia-12xxov_annual-c5i7xj&legendKey=coverage_coverage-30m-droufo_number_of_classes-w47dmp&pixelValue=2&pixelValue=4&year=1987&year=1988&year=1989&year=1990&year=1991&year=1992&year=1993&year=1994&year=1995&year=1996&year=1997&year=1998&year=1999&year=2000&year=2001&year=2002&year=2003&year=2004&year=2005&year=2006&year=2007&year=2008&year=2009&year=2010&year=2011&year=2012&year=2013&year=2014&year=2015&year=2016&year=2017&year=2018&year=2019&year=2020&year=2021&year=2022&year=2023&year=2024&year=2025",
+      "sha256": "06bfa149bb55a620a6dc83297ff31d5de9bd792aa0924938f145c3de3a8f659b"
+    },
+    {
+      "file": "deforestation-cerrado.json",
+      "url": "https://prd.plataforma.mapbiomas.org/api/v1/brazil/statistics/area?territoryId=1-4-3&spatialMethod=union&subthemeKey=desmatamento-copia-12xxov_annual-c5i7xj&legendKey=deforestation-omgdf4&pixelValue=4&pixelValue=6&year=1987&year=1988&year=1989&year=1990&year=1991&year=1992&year=1993&year=1994&year=1995&year=1996&year=1997&year=1998&year=1999&year=2000&year=2001&year=2002&year=2003&year=2004&year=2005&year=2006&year=2007&year=2008&year=2009&year=2010&year=2011&year=2012&year=2013&year=2014&year=2015&year=2016&year=2017&year=2018&year=2019&year=2020&year=2021&year=2022&year=2023&year=2024&year=2025",
+      "sha256": "0873698f478c99a0206390ad88b6b08ce52f3825a4d03745de6ae0878cd2ea69"
+    },
+    {
+      "file": "primary-standing-cerrado.json",
+      "url": "https://dev.plataforma.mapbiomas.org/api/v1/brazil/statistics/area?territoryId=1-4-3&spatialMethod=union&subthemeKey=desmatamento-copia-12xxov_annual-c5i7xj&legendKey=coverage_coverage-30m-droufo_number_of_classes-w47dmp&pixelValue=2&pixelValue=4&year=1987&year=1988&year=1989&year=1990&year=1991&year=1992&year=1993&year=1994&year=1995&year=1996&year=1997&year=1998&year=1999&year=2000&year=2001&year=2002&year=2003&year=2004&year=2005&year=2006&year=2007&year=2008&year=2009&year=2010&year=2011&year=2012&year=2013&year=2014&year=2015&year=2016&year=2017&year=2018&year=2019&year=2020&year=2021&year=2022&year=2023&year=2024&year=2025",
+      "sha256": "e8477c486ec67c5a9970d40066a31de12ca332996c95c7b4f9c87d523f7161b0"
+    },
+    {
+      "file": "deforestation-mata-atlantica.json",
+      "url": "https://prd.plataforma.mapbiomas.org/api/v1/brazil/statistics/area?territoryId=1-4-4&spatialMethod=union&subthemeKey=desmatamento-copia-12xxov_annual-c5i7xj&legendKey=deforestation-omgdf4&pixelValue=4&pixelValue=6&year=1987&year=1988&year=1989&year=1990&year=1991&year=1992&year=1993&year=1994&year=1995&year=1996&year=1997&year=1998&year=1999&year=2000&year=2001&year=2002&year=2003&year=2004&year=2005&year=2006&year=2007&year=2008&year=2009&year=2010&year=2011&year=2012&year=2013&year=2014&year=2015&year=2016&year=2017&year=2018&year=2019&year=2020&year=2021&year=2022&year=2023&year=2024&year=2025",
+      "sha256": "7b7927eb3bce03826780b376e395e2f5493d6cc5768d0d9d714bc9aca09dd0a0"
+    },
+    {
+      "file": "primary-standing-mata-atlantica.json",
+      "url": "https://dev.plataforma.mapbiomas.org/api/v1/brazil/statistics/area?territoryId=1-4-4&spatialMethod=union&subthemeKey=desmatamento-copia-12xxov_annual-c5i7xj&legendKey=coverage_coverage-30m-droufo_number_of_classes-w47dmp&pixelValue=2&pixelValue=4&year=1987&year=1988&year=1989&year=1990&year=1991&year=1992&year=1993&year=1994&year=1995&year=1996&year=1997&year=1998&year=1999&year=2000&year=2001&year=2002&year=2003&year=2004&year=2005&year=2006&year=2007&year=2008&year=2009&year=2010&year=2011&year=2012&year=2013&year=2014&year=2015&year=2016&year=2017&year=2018&year=2019&year=2020&year=2021&year=2022&year=2023&year=2024&year=2025",
+      "sha256": "c1843d44394feceacf397ef473d24f76de379c166ee50d48f07caf43bac21596"
+    }
+  ],
+  "counts": {
+    "atlasRecords": 76190,
+    "atlasTypes": {
+      "Estiagem e Seca": 33493,
+      "Enxurradas": 9854,
+      "Vendavais e Ciclones": 4885,
+      "Inundações": 6430,
+      "Granizo": 2284,
+      "Doenças infecciosas": 275,
+      "Tornado": 124,
+      "Erosão": 786,
+      "Alagamentos": 2144,
+      "Movimento de Massa": 1771,
+      "Outros": 1038,
+      "Incêndio Florestal": 3419,
+      "Chuvas Intensas": 9153,
+      "Onda de Frio": 272,
+      "Rompimento/Colapso de barragens": 41,
+      "Onda de Calor e Baixa Umidade": 221
+    }
+  },
+  "notes": [
+    "Desmatamento usa o mapa do ano de nascimento como base e soma os anos seguintes; não há resolução por aniversário.",
+    "Para nascimentos anteriores a 1987, usamos a vegetação de 1987 como referência, sem estimar a vegetação no nascimento.",
+    "Percentual = soma da classe 4 de ano-base+1 até 2025 / classe 2 no ano-base × 100; ano-base = max(nascimento,1987).",
+    "Classe 6 preservada no arquivo de dados, mas excluída dos percentuais para não contar recortes sucessivos da mesma área.",
+    "Vegetação primária significa vegetação nativa desde o início da série do MapBiomas, não prova de ausência de uso humano histórico.",
+    "O denominador é a vegetação primária mapeada no ano-base; exclui áreas já convertidas e vegetação secundária.",
+    "Consulta da classe 2 usa uma legenda numérica sem agregação como filtro de identidade da API; o significado de 2 vem do asset de desmatamento, não dos rótulos dessa legenda auxiliar.",
+    "A classe 4 e a área territorial dessa consulta são verificadas, ano a ano, contra a consulta padrão de desmatamento da mesma coleção e versão.",
+    "Média anual = registros municipais no período / quantidade de anos inclusivos, incluindo anos com zero registros.",
+    "Enchentes agrega Alagamentos, Inundações e Enxurradas; Secas agrega Estiagem e Seca.",
+    "Conta registros e reconhecimentos presentes na base tratada; usa Data_Evento e verifica protocolos únicos.",
+    "Uma mesma ocorrência pode afetar vários municípios; registros não são eventos meteorológicos únicos.",
+    "Mudanças na notificação afetam comparações temporais; os números não isolam o efeito da mudança climática.",
+    "Desastres: comparação fixa entre a média anual de 1991–2000 (10 anos) e 2015–2025 (11 anos), independentemente do nascimento.",
+    "Variação percentual dos registros = (média de 2015–2025 / média de 1991–2000 − 1) × 100.",
+    "Mapas simplificados para contexto; áreas estatísticas vêm do MapBiomas e não da geometria simplificada."
+  ]
+}

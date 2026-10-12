@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a1d">
+  <meta name="description" content="Veja a vegetação perdida desde seu nascimento e compare os registros de enchentes e secas entre os anos 1990 e 2015–2025. A floresta parece longe. As consequências chegam à cidade.">
+  <meta property="og:title" content="Quanto desmatamento desde que eu nasci?">
+  <meta property="og:description" content="A floresta parece longe. As consequências chegam à cidade. Descubra o que mudou desde que você nasceu.">
+  <meta property="og:type" content="website">
+  <title>Quanto desmatamento desde que eu nasci?</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/barlow-condensed-extrabold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script src="data/climate.js" defer></script>
+  <script src="data/maps.js" defer></script>
+  <script src="calculations.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Pular para o conteúdo</a>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="site-shell">
+    <header class="masthead">
+      <a class="wordmark" href="#inicio" aria-label="Desde que eu nasci — início">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M19 2 23 14 36 8 29 21 39 27 25 28 23 40 17 28 4 34 10 22 1 16 15 15Z"/></svg>
+        <span>DESDE QUE<br>EU NASCI.</span>
+      </a>
+      <p class="masthead-note">O PAÍS ONDE VOCÊ NASCEU.<br>O LUGAR ONDE VAI VIVER.</p>
+      <button class="source-button" data-sources>Fontes & método <span aria-hidden="true">↗</span></button>
+    </header>
+
+    <main id="main">
+      <section class="scene" id="inicio" aria-labelledby="title-intro">
+        <div class="split intro-split">
+          <div class="intro-copy">
+            <p class="eyebrow"><span class="little-line"></span> 01 / O seu tempo neste lugar</p>
+            <h1 id="title-intro" tabindex="-1">QUANTO<br><span class="rust">DESMATAMENTO</span><br>DESDE QUE<br>EU NASCI<span class="rust">?</span></h1>
+            <p class="lead">Você pode nunca ter pisado numa floresta.<br>Ainda assim, depende do que acontece lá.</p>
+            <form id="birth-form" novalidate>
+              <label for="birth-year">Em que ano você nasceu?</label>
+              <div class="birth-controls">
+                <div class="year-field"><input id="birth-year" name="ano" type="number" inputmode="numeric" min="1960" max="2026" step="1" value="1990" required aria-describedby="year-error"></div>
+                <button class="button primary" type="submit" id="start-button" disabled>Ver o que mudou <span aria-hidden="true">↗</span></button>
+              </div>
+              <p id="year-error" class="error" role="alert"></p>
+            </form>
+          </div>
+          <figure class="map-art hero-map">
+            <img class="city-painting" src="assets/cidade-e-floresta.png" width="1024" height="1536" alt="Pintura de uma cidade brasileira, com caixas-d’água, prédios e uma rua molhada, entre morros cobertos de vegetação." fetchpriority="high" decoding="async">
+            <div class="map-inset"><div class="map-holder" id="intro-map" aria-hidden="true"></div><span class="map-credit">MAPA IBGE · 2024</span></div>
+            <figcaption><span class="handwritten">A floresta parece longe.<br>As consequências chegam.</span></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="scene" id="florestas" aria-labelledby="title-forest" hidden>
+        <div class="split forest-split">
+          <div>
+            <p class="eyebrow"><span class="little-line"></span> 02 / A vegetação que perdemos</p>
+            <h2 id="title-forest" tabindex="-1">O BRASIL<br><span class="rust">QUE SUMIU.</span></h2>
+            <p class="lead" id="forest-intro"></p>
+            <p class="period-note" id="forest-period"></p>
+            <div id="biome-results" class="biome-results"></div>
+            <p class="method-note">A base é a vegetação primária que existia no ano de referência. Contamos a retirada nos anos seguintes, até 2025. <button class="inline-link" data-sources>Entenda a conta.</button></p>
+            <div class="scene-actions"><button class="back-button" data-go="0">← Voltar</button><button class="button primary" data-go="2">E a água? <span aria-hidden="true">→</span></button></div>
+          </div>
+          <figure class="map-art biome-map">
+            <div class="map-topline"><span>TRÊS BIOMAS</span><span id="map-period"></span></div>
+            <div id="forest-map" class="map-holder"></div>
+            <figcaption class="biome-caption"><span id="biome-caption-name">Amazônia</span><span>Limites dos biomas · IBGE, 2025</span></figcaption>
+            <div class="field-note">
+              <h3>A chuva do Sudeste e do Sul também depende das florestas no Norte.</h3>
+              <p>As árvores devolvem água ao ar. Os ventos carregam parte dessa umidade da Amazônia para o Centro-Oeste, o Sudeste e o Sul, onde ela ajuda a formar chuva. A qualidade das grandes cidades brasileiras depende do ciclo de chuvas, que depende das florestas.</p>
+              <a class="evidence-link" href="https://antigo.inpa.gov.br/index.php/ultimas-noticias/2641-universitarios-sao-capacitados-no-inpa-para-aplicacao-do-protocolo-de-avaliacao-rapida-de-igarapes" target="_blank" rel="noopener">Como funciona · INPA ↗</a>
+            </div>
+          </figure>
+        </div>
+      </section>
+
+      <section class="scene" id="agua" aria-labelledby="title-water" hidden>
+        <p class="eyebrow"><span class="little-line"></span> 03 / Quando a água muda a vida</p>
+        <div class="water-heading"><h2 id="title-water" tabindex="-1"><span class="flood-title">ÁGUA DEMAIS<br><small>NO SUL E SUDESTE.</small></span><span class="drought-title">ÁGUA DE MENOS<br><small>NO NORDESTE.</small></span></h2><div><p class="lead" id="water-intro"></p><p class="period-note" id="water-period"></p></div></div>
+        <div class="disaster-grid" id="disaster-results"></div>
+        <div class="city-consequences" aria-labelledby="city-consequences-title">
+          <h3 id="city-consequences-title">ISSO JÁ CHEGOU À CIDADE.</h3>
+          <div class="observations">
+            <article>
+              <h4>Na conta de luz.</h4>
+              <p>Em 2021, a escassez de água virou uma cobrança extra na conta de energia. Quem morava em São Paulo também pagava por um problema que atravessava o país.</p>
+              <a class="evidence-link" href="https://www.gov.br/mme/pt-br/assuntos/noticias/mme-e-aneel-apresentam-medidas-para-enfrentamento-do-cenario-de-aumento-nos-custos-de-geracao-de-energia" target="_blank" rel="noopener">A cobrança de 2021 · MME ↗</a>
+            </article>
+            <article>
+              <h4>Na água de beber.</h4>
+              <p>Em Porto Alegre, a inundação de 2024 danificou equipamentos de tratamento de água na Ilha da Pintada. Uma cidade cercada de água também pode ficar sem água para beber.</p>
+              <a class="evidence-link" href="https://www.estado.rs.gov.br/ilha-da-pintada-vai-receber-purificadores-de-agua-oferecidos-pelo-uruguai" target="_blank" rel="noopener">Ilha da Pintada, 2024 · Governo do RS ↗</a>
+            </article>
+            <article>
+              <h4>No preço da comida.</h4>
+              <p>Seca e calor reduziram a produção de leite e ajudaram a encarecê-lo na indústria em 2024, segundo o IBGE. O clima também pesa na cadeia que abastece o supermercado.</p>
+              <a class="evidence-link" href="https://agenciadenoticias.ibge.gov.br/agencia-noticias/2012-agencia-de-noticias/noticias/40489-precos-da-industria-crescem-0-45-em-maio-quarto-resultado-positivo-seguido" target="_blank" rel="noopener">Produção e preços, 2024 · IBGE ↗</a>
+            </article>
+          </div>
+          <p class="method-note">Esses exemplos mostram como o clima afeta a vida urbana. A participação do desmatamento em cada episódio exige estudos específicos; ela não é calculada aqui.</p>
+        </div>
+        <div class="scene-actions"><button class="back-button" data-go="1">← Voltar</button><button class="button primary" data-go="3">E daqui para frente? <span aria-hidden="true">→</span></button></div>
+      </section>
+
+      <section class="scene" id="futuro" aria-labelledby="title-future" hidden>
+        <div class="split future-split">
+          <div>
+            <p class="eyebrow"><span class="little-line"></span> 04 / Quem decide o que vem depois</p>
+            <h2 id="title-future">PASSA PELO<br><span class="rust">PRESIDENTE.</span></h2>
+            <p class="lead future-lead">O presidente escolhe ministros, dirige o governo federal e propõe o orçamento que o Congresso vota.</p>
+            <p class="future-body">Isso afeta o dinheiro e as equipes para fiscalizar o desmatamento, acompanhar riscos e prevenir desastres.</p>
+            <p class="civic-sources"><a class="evidence-link" href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm#art84" target="_blank" rel="noopener">Atribuições do presidente ↗</a><a class="evidence-link" href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12608.htm" target="_blank" rel="noopener">Responsabilidades na prevenção ↗</a></p>
+            <p class="future-stakes">Daqui a 30 anos, você ainda vai precisar de água, comida e um lugar seguro para morar.</p>
+            <p class="vote">VOTE COM CONSCIÊNCIA.</p>
+            <p class="vote">SE VOCÊ É DA CIDADE, VOTAR EM QUEM FAVORECE O AGRO VAI CONTRA SEUS INTERESSES.</p>
+            <div class="scene-actions"><button class="back-button" data-go="2">← Voltar</button><button class="button outline" data-go="0">Ver outro ano <span aria-hidden="true">↺</span></button></div>
+          </div>
+          <figure class="future-art">
+            <img class="city-painting" src="assets/cidade-e-floresta.png" width="1024" height="1536" alt="Pintura de prédios, vegetação e água ocupando a mesma paisagem brasileira." decoding="async">
+          </figure>
+        </div>
+      </section>
+      <noscript><p class="no-script">Ative o JavaScript para escolher seu ano e calcular os resultados. Você pode consultar os <a href="data/climate.json">dados utilizados</a> e as <a href="data/sources.json">fontes</a>.</p></noscript>
+      <p id="app-status" class="sr-only" role="status" aria-live="polite"></p>
+    </main>
+
+    <footer class="page-footer">
+      <nav class="chapter-nav" aria-label="Etapas da história">
+        <button data-go="0" aria-current="step"><span>01</span> O começo</button>
+        <button data-go="1" disabled><span>02</span> A vegetação</button>
+        <button data-go="2" disabled><span>03</span> A água</button>
+        <button data-go="3" disabled><span>04</span> O futuro</button>
+      </nav>
+      <p>MAPBIOMAS · ATLAS DE DESASTRES · IBGE<br>DADOS ATÉ 2025</p>
+    </footer>
+  </div>
+
+  <dialog id="sources-dialog" aria-labelledby="sources-title">
+    <div class="dialog-top"><span class="eyebrow">Por trás dos números</span><button id="close-sources" aria-label="Fechar fontes e método">×</button></div>
+    <h2 id="sources-title">FONTES & MÉTODO</h2>
+    <p>Os resultados são calculados no seu navegador, sem enviar seu ano de nascimento. Aqui estão as fontes, o período coberto e os limites de cada conta.</p>
+    <h3>Desmatamento · 1987–2025</h3>
+    <p><a href="https://brasil.mapbiomas.org/iniciativas-e-produtos/cobertura-e-uso-da-terra/desmatamento/anual/" target="_blank" rel="noopener">MapBiomas, Coleção 11, versão 5 ↗</a>. A base é a área de vegetação primária (classe 2) mapeada no ano de nascimento. Somamos sua supressão (classe 4) nos anos seguintes, até 2025, dividimos pela área de referência e multiplicamos por 100. Para 1998, por exemplo, usamos a vegetação de 1998 e os desmatamentos de 1999–2025. Hectares são divididos por 100 para obter km².</p>
+    <p>“Primária” é a vegetação que aparece como nativa desde o início da série. Não significa ausência de uso humano anterior. Vegetação secundária e sua retirada ficam fora da base e do numerador. Assim, a conta não soma cortes sucessivos em áreas regeneradas. Ela estima a perda por desmatamento em relação à vegetação primária do ano-base; não é uma medida de perda líquida, que descontaria a regeneração.</p>
+    <p>O ano de 2025 usa filtros especiais porque ainda não há o ano seguinte na coleção para confirmar a mudança. Estimativas podem mudar entre coleções.</p>
+    <h3>Enchentes e secas · 1991–2025</h3>
+    <p><a href="https://atlasdigital.mdr.gov.br/paginas/downloads.xhtml" target="_blank" rel="noopener">Atlas Digital de Desastres no Brasil, Sedec/MIDR e Ceped/UFSC ↗</a>. Base 1991–2025, versão 1.1 de 6 de agosto de 2026. Contamos os registros municipais pela data do evento, nas regiões indicadas, verificando que os protocolos não se repetem.</p>
+    <p>Enchentes: alagamentos, inundações e enxurradas. Secas: estiagem e seca. Uma ocorrência que atinge vários municípios gera vários registros. Não são contagens de tempestades ou de episódios meteorológicos únicos.</p>
+    <p>Comparamos a média anual de <strong>1991–2000</strong> (soma dividida por 10) com a de <strong>2015–2025</strong> (soma dividida por 11). A variação percentual é (média recente ÷ média de referência − 1) × 100. Os períodos são fixos e independem do nascimento, incluindo os anos sem registros. A série não tem 1990. Mudanças na cobertura e na notificação afetam a comparação: ela não mede, isoladamente, a mudança climática.</p>
+    <h3>Quem nasceu antes do início dos dados?</h3>
+    <p>Você pode escolher a partir de 1960; a abertura vem preenchida com 1990. Para nascimentos anteriores a 1987, a vegetação de 1987 é a referência, e contamos o desmatamento de 1988–2025. Isso não cobre toda a vida da pessoa. Não estimamos a vegetação anterior à série. Para 2025 ou depois, ainda não existe período posterior disponível para a conta. O mapa anual do nascimento é a referência, sem precisão por dia ou mês. A tela de enchentes e secas sempre usa os dois períodos fixos.</p>
+    <h3>Mapas e créditos</h3>
+    <p><a href="https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html" target="_blank" rel="noopener">IBGE — malha dos estados de 2024 ↗</a> e <a href="https://geoftp.ibge.gov.br/informacoes_ambientais/estudos_ambientais/biomas/vetores/" target="_blank" rel="noopener">limites dos biomas de 2025 ↗</a>. Geometrias simplificadas para exibição; as cores dos biomas identificam territórios, não locais desmatados. As setas são um esquema do transporte de umidade, não trajetórias medidas ou uma previsão do tempo. Os mapas regionais recortam apenas os estados da região indicada. As áreas estatísticas vêm do MapBiomas.</p>
+    <p>MapBiomas: dados públicos sob CC BY 4.0. Projeto MapBiomas — Coleção 11 da Série Anual de Mapas de Cobertura e Uso da Terra do Brasil, consulta em <span id="source-date"></span>. Tipografia Barlow Condensed, Jeremy Tribby, SIL Open Font License.</p>
+    <p>A pintura representa uma cidade imaginária. Foi gerada com IA para este projeto; não documenta uma enchente ou um lugar real.</p>
+    <h3>A floresta, a cidade e o governo</h3>
+    <p>O <a href="https://antigo.inpa.gov.br/index.php/ultimas-noticias/2641-universitarios-sao-capacitados-no-inpa-para-aplicacao-do-protocolo-de-avaliacao-rapida-de-igarapes" target="_blank" rel="noopener">INPA explica o transporte de umidade da Amazônia ↗</a> para outras regiões do Brasil. A chuva depende também das condições atmosféricas; a floresta não é sua única fonte de umidade.</p>
+    <p>Os três exemplos urbanos têm links junto ao texto: MME, sobre a bandeira de escassez hídrica de 2021 (consumidores da Tarifa Social ficaram fora dessa bandeira); Governo do RS, sobre os equipamentos de água danificados na Ilha da Pintada em 2024; e IBGE, sobre seca, calor e preços industriais do leite em maio de 2024. O dado do leite trata de preços na indústria, não de uma estimativa de inflação no supermercado. Não atribuímos esses episódios individualmente ao desmatamento.</p>
+    <p>As competências do presidente estão no <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm#art84" target="_blank" rel="noopener">artigo 84 da Constituição, especialmente incisos I, II e XXIII ↗</a>. A <a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12608.htm" target="_blank" rel="noopener">Lei 12.608/2012, artigos 6º a 9º ↗</a>, distribui responsabilidades de prevenção entre União, estados e municípios. A menção a 30 anos é um horizonte para pensar políticas públicas, não uma previsão de desastre para uma cidade.</p>
+    <div class="data-links"><a href="data/climate.json" download>Baixar dados do site ↓</a><a href="data/sources.json" download>Fontes e arquivos de origem ↓</a></div>
+  </dialog>
+</body>
+</html>
