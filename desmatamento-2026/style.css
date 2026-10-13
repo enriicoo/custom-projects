@@ -155,3 +155,4 @@ dialog p{color:#c8ccc1}
 .forest-split #forest-intro{font-size:18px;line-height:1.55;max-width:560px}
 #biome-results{margin-top:12px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+.future-split #title-future{font-size:clamp(56px,5.8vw,82px);line-height:.93}#title-future .future-title-detail{display:block;font-size:.44em;line-height:1.12;margin-top:16px;max-width:520px;letter-spacing:0}@media(max-width:480px){.future-split #title-future{font-size:clamp(44px,12vw,58px)}#title-future .future-title-detail{font-size:.47em;margin-top:12px}}
